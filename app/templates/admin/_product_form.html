@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - SweetShop{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ title }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control") }}
+                        {% if form.name.errors %}
+                            <div class="text-danger">
+                                {% for error in form.name.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="4") }}
+                        {% if form.description.errors %}
+                            <div class="text-danger">
+                                {% for error in form.description.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.price.label(class="form-label") }}
+                        {{ form.price(class="form-control") }}
+                        {% if form.price.errors %}
+                            <div class="text-danger">
+                                {% for error in form.price.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.image_url.label(class="form-label") }}
+                        {{ form.image_url(class="form-control") }}
+                        {% if form.image_url.errors %}
+                            <div class="text-danger">
+                                {% for error in form.image_url.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                <div class="mt-3">
+                    <a href="{{ url_for('admin.products') }}" class="btn btn-secondary">Back to Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

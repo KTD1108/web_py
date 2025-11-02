@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - SweetShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4 fw-bold"><i class="fas fa-box-open me-2 text-primary"></i>My Orders</h2>
+
+    {% if orders %}
+    <div class="accordion" id="ordersAccordion">
+        {% for order in orders %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header" id="orderHeading{{ order.id }}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link text-decoration-none text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#order{{ order.id }}" aria-expanded="true" aria-controls="order{{ order.id }}">
+                            <i class="fas fa-receipt me-2 text-primary"></i>Order #{{ order.id }} - {{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                        </button>
+                    </h5>
+                    <div>
+                        <span class="badge bg-{% if order.status == 'PENDING' %}warning{% elif order.status == 'PAID' %}primary{% elif order.status == 'SHIPPED' %}info{% elif order.status == 'DELIVERED' %}success{% else %}secondary{% endif %} me-2">{{ order.status }}</span>
+                        <strong class="text-primary">Total: ${{ "%.2f"|format(order.total_amount) }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div id="order{{ order.id }}" class="collapse" aria-labelledby="orderHeading{{ order.id }}" data-parent="#ordersAccordion">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6><i class="fas fa-list me-2 text-info"></i>Order Items:</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in order.items %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% if item.product and item.product.image_url %}
+                                                        <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">
+                                                    {% endif %}
+                                                    {% if item.product %}{{ item.product.name }}{% else %}Product Info Not Available{% endif %}
+                                                </div>
+                                            </td>
+                                            <td>${{ "%.2f"|format(item.price) }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>${{ "%.2f"|format(item.price * item.quantity) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-map-marker-alt me-2 text-success"></i>Shipping Address:</h6>
+                            <p>
+                                {% if order.shipping_address %}
+                                <strong>{{ order.shipping_address.full_name }}</strong><br>
+                                {{ order.shipping_address.street }}<br>
+                                {{ order.shipping_address.city }}, {{ order.shipping_address.state }} {{ order.shipping_address.zip_code }}<br>
+                                {{ order.shipping_address.phone }}
+                                {% else %}
+                                <span class="text-muted">Address not available</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ url_for('main.order_details', order_id=order.id) }}" class="btn btn-primary">
+                            <i class="fas fa-eye me-2"></i>View Full Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-box-open text-muted mb-3" style="font-size: 4rem;"></i>
+        <h4 class="text-muted">No orders yet</h4>
+        <p class="text-muted">You haven't placed any orders. Start shopping now!</p>
+        <a href="{{ url_for('main.home') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-candy-cane me-2"></i>Start Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

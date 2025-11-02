@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - SweetShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 400px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <div class="text-center">
+                            <i class="fas fa-candy-cane text-primary" style="font-size: 5rem;"></i>
+                            <p class="text-muted mt-2">No Image Available</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h1 class="mb-3">{{ product.name }}</h1>
+                    <div class="d-flex align-items-center mb-3">
+                        <h2 class="text-primary mb-0">${{ "%.2f"|format(product.price) }}</h2>
+                        <span class="badge bg-success ms-3">In Stock</span>
+                    </div>
+                    
+                    <p class="lead">{{ product.description }}</p>
+                    
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'ADMIN' %}
+                            <div class="d-grid gap-2 mt-4">
+                                <a href="{{ url_for('admin.edit_product', id=product.id) }}" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-edit"></i> Edit Product
+                                </a>
+                                <a href="{{ url_for('admin.products') }}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-arrow-left"></i> Back to Products
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="card bg-light p-3 mt-4">
+                                <form method="POST" action="{{ url_for('main.add_to_cart', product_id=product.id) }}">
+                                    {{ form.hidden_tag() }}
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            {{ form.quantity.label(class="form-label fw-bold") }}
+                                            {{ form.quantity(class="form-control form-control-lg") }}
+                                            {% if form.quantity.errors %}
+                                                <div class="text-danger">
+                                                    {% for error in form.quantity.errors %}
+                                                        <small>{{ error }}</small>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-lg w-100">
+                                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Please <a href="{{ url_for('auth.login') }}">login</a> to add this product to your cart.
+                        </div>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products Section (could be added later) -->
+    <div class="mt-5">
+        <h3>Similar Products</h3>
+        <div class="row">
+            <!-- This section could be populated with related products -->
+        </div>
+    </div>
+</div>
+{% endblock %}

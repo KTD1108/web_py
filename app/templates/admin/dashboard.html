@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - SweetShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold"><i class="fas fa-tachometer-alt me-2 text-primary"></i>Admin Dashboard</h2>
+            <p class="lead">Welcome to the admin panel, {{ current_user.username }}!</p>
+        </div>
+    </div>
+    
+    <div class="row admin-dashboard">
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-primary border-3 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-box-open fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="card-title mt-3">Manage Products</h5>
+                    <p class="card-text text-muted">Add, edit, or delete confectionery products</p>
+                    <a href="{{ url_for('admin.products') }}" class="btn btn-primary">Manage Products</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-success border-3 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                    </div>
+                    <h5 class="card-title mt-3">View Orders</h5>
+                    <p class="card-text text-muted">Monitor and manage customer orders</p>
+                    <a href="{{ url_for('admin.orders') }}" class="btn btn-success">View Orders</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-info border-3 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-users fa-2x text-info"></i>
+                    </div>
+                    <h5 class="card-title mt-3">Customer Management</h5>
+                    <p class="card-text text-muted">View and manage customer information</p>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-info">Manage Customers</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

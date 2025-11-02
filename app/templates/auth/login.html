@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Login - SweetShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-circle text-primary" style="font-size: 3rem;"></i>
+                        <h2 class="mt-3 fw-bold">Welcome Back</h2>
+                        <p class="text-muted">Sign in to your account</p>
+                    </div>
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label fw-bold") }}
+                            {{ form.username(class="form-control form-control-lg") }}
+                            {% if form.username.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.username.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-4">
+                            {{ form.password.label(class="form-label fw-bold") }}
+                            {{ form.password(class="form-control form-control-lg") }}
+                            {% if form.password.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.password.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="d-grid mb-4">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                    
+                    <div class="text-center">
+                        <p class="mb-0">Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
