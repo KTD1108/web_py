@@ -3,26 +3,26 @@
 {% block hero %}
 <div class="hero-section">
     <div class="container text-center">
-        <h1>Sweet Delights Await You</h1>
-        <p>Indulge in our premium selection of artisanal confectionery made with love and the finest ingredients</p>
+        <h1>SweetShop</h1>
+        <p>Thưởng thức những món bánh kẹo thủ công đẳng cấp</p>
         <a href="{{ url_for('main.view_cart') }}" class="btn btn-light btn-lg me-2">
-            <i class="fas fa-shopping-cart"></i> View Cart
+            <i class="fas fa-shopping-cart"></i> Xem giỏ hàng
         </a>
         <a href="{{ url_for('main.my_orders') }}" class="btn btn-outline-light btn-lg">
-            <i class="fas fa-box-open"></i> Track Orders
+            <i class="fas fa-box-open"></i> Theo dõi đơn hàng
         </a>
     </div>
 </div>
 {% endblock %}
 
-{% block title %}Home - SweetShop{% endblock %}
+{% block title %}Trang chủ - Cửa hàng bánh kẹo{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row mb-4">
         <div class="col-12">
-            <h2>Our Delicious Products</h2>
-            <p class="text-muted">Explore our handcrafted selection of sweet treats</p>
+            <h2>Sản phẩm</h2>
+            <p class="text-muted">Khám phá bộ sưu tập bánh kẹo</p>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                     <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
                         <div class="text-center">
                             <i class="fas fa-candy-cane text-primary" style="font-size: 3rem;"></i>
-                            <p class="text-muted mt-2">No Image</p>
+                            <p class="text-muted mt-2">Chưa có hình ảnh</p>
                         </div>
                     </div>
                 {% endif %}
@@ -46,16 +46,16 @@
                     <p class="card-text text-muted flex-grow-1">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
                     <div class="mt-auto">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="text-primary mb-0">${{ "%.2f"|format(product.price) }}</h6>
+                            <h6 class="text-primary mb-0">{{ "%.2f"|format(product.price) }}₫</h6>
                             <div class="btn-group" role="group">
                                 <a href="{{ url_for('main.product_detail', id=product.id) }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-eye"></i> Details
+                                    <i class="fas fa-eye"></i> Chi tiết
                                 </a>
                                 {% if current_user.is_authenticated and current_user.role != 'ADMIN' %}
                                     <form method="POST" action="{{ url_for('main.add_to_cart', product_id=product.id) }}" style="display: inline;">
                                         <input type="hidden" name="quantity" value="1">
                                         <button type="submit" class="btn btn-success">
-                                            <i class="fas fa-plus"></i> Cart
+                                            <i class="fas fa-plus"></i> Giỏ hàng
                                         </button>
                                     </form>
                                 {% endif %}
@@ -72,8 +72,8 @@
         <div class="mb-4">
             <i class="fas fa-candy-cane text-muted" style="font-size: 5rem;"></i>
         </div>
-        <h4 class="text-muted">No products available at the moment</h4>
-        <p class="text-muted">Please check back later for new delicious treats</p>
+        <h4 class="text-muted">Hiện chưa có sản phẩm nào</h4>
+        <p class="text-muted">Hãy quay lại sau để khám phá những món ngọt mới nhất nhé!</p>
     </div>
     {% endif %}
 </div>

@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Edit User - Admin Panel{% endblock %}
+{% block title %}Chỉnh sửa người dùng - Trang quản trị{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row mb-4">
         <div class="col-12">
-            <h2 class="fw-bold"><i class="fas fa-user-edit me-2 text-primary"></i>Edit User</h2>
-            <p class="lead">Editing account for: {{ user.username }}</p>
+            <h2 class="fw-bold">
+                <i class="fas fa-user-edit me-2 text-primary"></i>
+                Chỉnh sửa người dùng
+            </h2>
+            <p class="lead">Đang chỉnh sửa tài khoản: {{ user.username }}</p>
         </div>
     </div>
     
@@ -31,7 +34,7 @@
                         <div class="mb-3">
                             {{ form.password.label(class="form-label fw-bold") }}
                             {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
-                            <div class="form-text">Leave blank to keep current password</div>
+                            <div class="form-text">Để trống nếu muốn giữ nguyên mật khẩu hiện tại</div>
                             {% if form.password.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.password.errors %}{{ error }}{% endfor %}
@@ -51,7 +54,7 @@
                         
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                                <i class="fas fa-arrow-left me-2"></i>Hủy bỏ
                             </a>
                             {{ form.submit(class="btn btn-primary") }}
                         </div>

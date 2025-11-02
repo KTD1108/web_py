@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Checkout - SweetShop{% endblock %}
+{% block title %}Thanh toán - Cửa hàng bánh kẹo{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
+        <!-- Tóm tắt đơn hàng -->
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="fas fa-list me-2"></i>Order Summary</h3>
+                    <h3 class="mb-0"><i class="fas fa-list me-2"></i>Tóm tắt đơn hàng</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,16 +33,16 @@
                                             <span>{{ item.product.name }}</span>
                                         </div>
                                     </td>
-                                    <td>${{ "%.2f"|format(item.product.price) }}</td>
+                                    <td>{{ "%.2f"|format(item.product.price) }}₫</td>
                                     <td>{{ item.quantity }}</td>
-                                    <td>${{ "%.2f"|format(item.product.price * item.quantity) }}</td>
+                                    <td>{{ "%.2f"|format(item.product.price * item.quantity) }}₫</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="3" class="text-end">Total:</th>
-                                    <th>${{ "%.2f"|format(total) }}</th>
+                                    <th colspan="3" class="text-end">Tổng cộng:</th>
+                                    <th>{{ "%.2f"|format(total) }}₫</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -50,10 +51,11 @@
             </div>
         </div>
         
+        <!-- Địa chỉ giao hàng -->
         <div class="col-lg-4">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Shipping Address</h3>
+                    <h3 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ giao hàng</h3>
                 </div>
                 <div class="card-body">
                     {% if addresses %}
@@ -72,7 +74,7 @@
                                                 <p class="mb-0">{{ address.phone }}</p>
                                             </div>
                                             {% if address.is_default %}
-                                            <span class="badge bg-primary">Default</span>
+                                            <span class="badge bg-primary">Mặc định</span>
                                             {% endif %}
                                         </div>
                                     </label>
@@ -81,40 +83,41 @@
                         </div>
                         {% endfor %}
                         <button type="submit" class="btn btn-success btn-lg w-100">
-                            <i class="fas fa-check-circle me-2"></i>Place Order
+                            <i class="fas fa-check-circle me-2"></i>Đặt hàng
                         </button>
                     </form>
                     {% else %}
                     <div class="text-center py-4">
                         <i class="fas fa-map-marker-alt text-muted mb-3" style="font-size: 3rem;"></i>
-                        <p class="text-muted">You don't have any saved addresses.</p>
+                        <p class="text-muted">Bạn chưa lưu địa chỉ giao hàng nào.</p>
                         <a href="{{ url_for('main.addresses') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Add Address
+                            <i class="fas fa-plus me-2"></i>Thêm địa chỉ
                         </a>
                     </div>
                     {% endif %}
                 </div>
             </div>
             
+            <!-- Tóm tắt thanh toán -->
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Order Summary</h5>
+                    <h5 class="card-title">Tổng quan đơn hàng</h5>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal:</span>
-                        <strong>${{ "%.2f"|format(total) }}</strong>
+                        <span>Tạm tính:</span>
+                        <strong>{{ "%.2f"|format(total) }}₫</strong>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Shipping:</span>
-                        <span class="text-success">FREE</span>
+                        <span>Phí giao hàng:</span>
+                        <span class="text-success">MIỄN PHÍ</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Tax:</span>
-                        <span>$0.00</span>
+                        <span>Thuế:</span>
+                        <span>0₫</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between">
-                        <h5>Total:</h5>
-                        <h5 class="text-primary">${{ "%.2f"|format(total) }}</h5>
+                        <h5>Tổng cộng:</h5>
+                        <h5 class="text-primary">{{ "%.2f"|format(total) }}₫</h5>
                     </div>
                 </div>
             </div>

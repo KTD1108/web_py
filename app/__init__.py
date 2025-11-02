@@ -16,7 +16,7 @@ def create_app(config_class=Config):
     
     # Set login view
     login_manager.login_view = 'auth.login'
-    login_manager.login_message = 'Please log in to access this page.'
+    login_manager.login_message = 'Đăng nhập để truy cập trang này.'
 
     # Import and register blueprints
     from app.auth import bp as auth_bp
