@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
+from sqlalchemy.orm import joinedload
 from app import db
 from app.main import bp
 from app.main.forms import AddToCartForm, AddressForm
@@ -40,7 +41,7 @@ def add_to_cart(product_id):
             db.session.add(cart_item)
         
         db.session.commit()
-        flash(f'{product.name} added to cart!', 'success')
+        flash(f'{product.name} đã thêm vào giỏ hàng', 'success')
     
     return redirect(url_for('main.product_detail', id=product_id))
 
@@ -69,7 +70,7 @@ def update_cart(item_id):
         db.session.delete(cart_item)
     
     db.session.commit()
-    flash('Cart updated successfully!', 'success')
+    flash('Giỏ hàng cập nhật thành công!', 'success')
     return redirect(url_for('main.view_cart'))
 
 
@@ -79,7 +80,7 @@ def remove_from_cart(item_id):
     cart_item = Cart.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
     db.session.delete(cart_item)
     db.session.commit()
-    flash('Item removed from cart.', 'info')
+    flash('Đã xóa sản phẩm khỏi giỏ hàng.', 'info')
     return redirect(url_for('main.view_cart'))
 
 
@@ -114,7 +115,7 @@ def add_address():
         
         db.session.add(address)
         db.session.commit()
-        flash('Address added successfully!', 'success')
+        flash('Đã thêm địa chỉ thành công!', 'success')
     
     return redirect(url_for('main.addresses'))
 
@@ -139,7 +140,7 @@ def edit_address(address_id):
         address.is_default = form.is_default.data
         
         db.session.commit()
-        flash('Address updated successfully!', 'success')
+        flash('Địa chỉ đã được cập nhật thành công!', 'success')
         return redirect(url_for('main.addresses'))
     
     return render_template('main/edit_address.html', form=form, address=address)
@@ -151,7 +152,7 @@ def delete_address(address_id):
     address = Address.query.filter_by(id=address_id, user_id=current_user.id).first_or_404()
     db.session.delete(address)
     db.session.commit()
-    flash('Address deleted successfully!', 'success')
+    flash('Đã xóa địa chỉ thành công!', 'success')
     return redirect(url_for('main.addresses'))
 
 
@@ -175,7 +176,7 @@ def checkout():
         shipping_address_id = request.form.get('shipping_address_id')
         
         if not shipping_address_id:
-            flash('Please select a shipping address.', 'error')
+            flash('Vui lòng chọn địa chỉ giao hàng.', 'error')
             return render_template('main/checkout.html', cart_items=cart_items, addresses=user_addresses, total=total_amount)
         
         # Create order
@@ -196,10 +197,11 @@ def checkout():
                 quantity=item.quantity,
                 price=item.product.price
             )
+            db.session.add(order_item)
             db.session.delete(item)  # Remove from cart
         
         db.session.commit()
-        flash('Order placed successfully!', 'success')
+        flash('Đã đặt hàng thành công!', 'success')
         return redirect(url_for('main.order_success', order_id=order.id))
     
     return render_template('main/checkout.html', cart_items=cart_items, addresses=user_addresses, total=total_amount)
@@ -219,25 +221,22 @@ def order_success(order_id):
 @bp.route('/order_details/<int:order_id>')
 @login_required
 def order_details(order_id):
-    order = Order.query.filter_by(id=order_id, user_id=current_user.id).first_or_404()
-    # Force the relationships to be loaded
-    items = order.items  # This loads the order items
-    for item in items:
-        _ = item.product  # This loads the product for each item
-    _ = order.shipping_address  # This loads the shipping address
+    # Use eager loading to fetch all necessary data in one query
+    order = Order.query.options(
+        joinedload(Order.items).joinedload(OrderItem.product),
+        joinedload(Order.shipping_address)
+    ).filter_by(id=order_id, user_id=current_user.id).first_or_404()
+    
     return render_template('main/order_details.html', order=order)
 
 
 @bp.route('/my_orders')
 @login_required
 def my_orders():
-    # Query orders and load relationships for each one individually to avoid issues
-    orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.order_date.desc()).all()
-    # Ensure relationships are loaded by accessing them
-    for order in orders:
-        # Force the relationships to be loaded
-        items = order.items  # This loads the order items
-        for item in items:
-            _ = item.product  # This loads the product for each item
-        _ = order.shipping_address  # This loads the shipping address
+    # Use eager loading to fetch all necessary data in one query
+    orders = Order.query.options(
+        joinedload(Order.items).joinedload(OrderItem.product),
+        joinedload(Order.shipping_address)
+    ).filter_by(user_id=current_user.id).order_by(Order.order_date.desc()).all()
+    
     return render_template('main/my_orders.html', orders=orders)

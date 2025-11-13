@@ -39,7 +39,7 @@ class Product(db.Model):
     
     # Relationships
     cart_items = db.relationship('Cart', backref='product', lazy=True, cascade='all, delete-orphan')
-    order_items = db.relationship('OrderItem', backref='product', lazy=True, cascade='all, delete-orphan')
+    order_items = db.relationship('OrderItem', back_populates='product', cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<Product {self.name}>'
@@ -100,6 +100,9 @@ class OrderItem(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)  # Price at time of order
+    
+    # Define the relationship to the Product model
+    product = db.relationship('Product', back_populates='order_items')
     
     def __repr__(self):
         return f'<OrderItem {self.order_id} - {self.product_id}>'

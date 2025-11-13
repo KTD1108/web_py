@@ -15,7 +15,7 @@ def register():
         # Check if username already exists
         user = User.query.filter_by(username=form.username.data).first()
         if user:
-            flash('Username already exists. Please choose a different one.', 'error')
+            flash('Tên người dùng đã tồn tại. Vui lòng chọn tên khác.', 'error')
             return render_template('auth/register.html', form=form)
         
         # Create new user
@@ -25,7 +25,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         
-        flash('Registration successful!', 'success')
+        flash('Đăng ký thành công!', 'success')
         return redirect(url_for('auth.login'))
     
     return render_template('auth/register.html', form=form)
@@ -44,12 +44,12 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
-            flash('Invalid username or password', 'error')
+            flash('Tên người dùng hoặc mật khẩu không hợp lệ', 'error')
     
     return render_template('auth/login.html', form=form)
 
 @bp.route('/logout')
 def logout():
     logout_user()
-    flash('You have been logged out.', 'info')
+    flash('Bạn đã đăng xuất.', 'info')
     return redirect(url_for('main.home'))

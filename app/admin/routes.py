@@ -42,7 +42,7 @@ def edit_user(user_id):
     user = User.query.get_or_404(user_id)
     # Prevent admin from editing their own role/credentials accidentally
     if user.id == current_user.id:
-        flash('You cannot edit your own account from here.', 'error')
+        flash('Bạn không thể chỉnh sửa tài khoản của mình từ đây.', 'error')
         return redirect(url_for('admin.users'))
     
     form = UserForm(obj=user)
@@ -53,7 +53,7 @@ def edit_user(user_id):
         user.role = form.role.data
         
         db.session.commit()
-        flash(f'User {user.username} updated successfully!', 'success')
+        flash(f'User {user.username} đã cập nhật thành công!', 'success')
         return redirect(url_for('admin.users'))
     
     return render_template('admin/edit_user.html', form=form, user=user)
@@ -65,7 +65,7 @@ def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     # Prevent admin from deleting their own account
     if user.id == current_user.id:
-        flash('You cannot delete your own account.', 'error')
+        flash('Bạn không thể xóa tài khoản của chính mình.', 'error')
         return redirect(url_for('admin.users'))
     
     # Also delete related records to maintain referential integrity
@@ -85,7 +85,7 @@ def delete_user(user_id):
     # Finally delete the user
     db.session.delete(user)
     db.session.commit()
-    flash('User deleted successfully!', 'success')
+    flash('Đã xóa người dùng thành công!', 'success')
     return redirect(url_for('admin.users'))
 
 @bp.route('/users/<int:user_id>/orders')
@@ -121,10 +121,10 @@ def order_details(order_id):
         if new_status in ['PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED']:
             order.status = new_status
             db.session.commit()
-            flash(f'Order status updated to {new_status}', 'success')
+            flash(f'Trạng thái đơn hàng đã được cập nhật thành {new_status}', 'success')
             return redirect(url_for('admin.order_details', order_id=order.id))
         else:
-            flash('Invalid status', 'error')
+            flash('Trạng thái không hợp lệ', 'error')
     
     return render_template('admin/order_details.html', order=order)
 
@@ -149,10 +149,10 @@ def add_product():
         )
         db.session.add(product)
         db.session.commit()
-        flash('Product added successfully!', 'success')
+        flash('Sản phẩm đã được thêm thành công!', 'success')
         return redirect(url_for('admin.products'))
     
-    return render_template('admin/_product_form.html', form=form, title='Add Product')
+    return render_template('admin/_product_form.html', form=form, title='Thêm sản phẩm')
 
 @bp.route('/products/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -168,17 +168,23 @@ def edit_product(id):
         product.image_url = form.image_url.data
         
         db.session.commit()
-        flash('Product updated successfully!', 'success')
+        flash('Sản phẩm đã được cập nhật thành công!', 'success')
         return redirect(url_for('admin.products'))
     
-    return render_template('admin/_product_form.html', form=form, title='Edit Product', product=product)
+    return render_template('admin/_product_form.html', form=form, title='Sửa sản phẩm', product=product)
 
 @bp.route('/products/delete/<int:id>', methods=['POST'])
 @login_required
 @admin_required
 def delete_product(id):
     product = Product.query.get_or_404(id)
+    
+    # Check if the product is in any order
+    if OrderItem.query.filter_by(product_id=product.id).first():
+        flash('Không thể xóa sản phẩm đã có trong đơn hàng của khách. Hãy xem xét việc ẩn sản phẩm thay vì xóa.', 'error')
+        return redirect(url_for('admin.products'))
+        
     db.session.delete(product)
     db.session.commit()
-    flash('Product deleted successfully!', 'success')
+    flash('Đã xóa sản phẩm thành công!', 'success')
     return redirect(url_for('admin.products'))
